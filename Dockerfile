@@ -82,10 +82,12 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   # Optional: Set these values for the Bluemix Vulnerability Report
   && sed -i 's/PASS_MAX_DAYS\t99999/PASS_MAX_DAYS\t90/' /etc/login.defs \
   && sed -i 's/PASS_MIN_DAYS\t0/PASS_MIN_DAYS\t1/' /etc/login.defs \
-  && sed -i 's/password\t\[success=1 default=ignore\]\tpam_unix\.so obscure sha512/password\t[success=1 default=ignore]\tpam_unix.so obscure sha512 minlen=8/' /etc/pam.d/common-password
+  && sed -i 's/password\t\[success=1 default=ignore\]\tpam_unix\.so obscure sha512/password\t[success=1 default=ignore]\tpam_unix.so obscure sha512 minlen=8/' /etc/pam.d/common-password \
+  && useradd mqperf -G mqm \
+  && echo mqperf:orland02 | chpasswd 
 
 COPY *.sh /usr/local/bin/
-COPY *.mqsc /etc/mqm/
+COPY config.mqsc /etc/mqm/
 COPY admin.json /etc/mqm/
 
 COPY mq-dev-config /etc/mqm/mq-dev-config
@@ -94,8 +96,10 @@ RUN chmod +x /usr/local/bin/*.sh
 
 # Always use port 1414 (the Docker administrator can re-map ports at runtime)
 # Expose port 9443 for the web console
-EXPOSE 1414 9443
+EXPOSE 1414 9443 1420
 
 ENV LANG=en_US.UTF-8
+ENV LOG_PRIM=16
+ENV LOG_FILE_SZ=16384
 
 ENTRYPOINT ["mq.sh"]
