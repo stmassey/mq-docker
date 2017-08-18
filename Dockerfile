@@ -94,7 +94,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   # Optional: Set these values for the Bluemix Vulnerability Report
   && sed -i 's/PASS_MAX_DAYS\t99999/PASS_MAX_DAYS\t90/' /etc/login.defs \
   && sed -i 's/PASS_MIN_DAYS\t0/PASS_MIN_DAYS\t1/' /etc/login.defs \
-  && sed -i 's/password\t\[success=1 default=ignore\]\tpam_unix\.so obscure sha512/password\t[success=1 default=ignore]\tpam_unix.so obscure sha512 minlen=8/' /etc/pam.d/common-password 
+  && sed -i 's/password\t\[success=1 default=ignore\]\tpam_unix\.so obscure sha512/password\t[success=1 default=ignore]\tpam_unix.so obscure sha512 minlen=8/' /etc/pam.d/common-password \
+  && useradd mqperf -G mqm \
+  && echo mqperf:changeMeBeforeBuilding | chpasswd 
 
 COPY *.sh /usr/local/bin/
 COPY config.mqsc /etc/mqm/
