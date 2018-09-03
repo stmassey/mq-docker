@@ -20,11 +20,6 @@ QMGR_EXISTS=`dspmq | grep ${MQ_QMGR_NAME} > /dev/null ; echo $?`
 
 if [ ${QMGR_EXISTS} -ne 0 ]; then
   MQ_DEV=${MQ_DEV:-"true"}
-  if [ "${MQ_DEV}" == "true" ]; then
-    # Turns on early adopt if we're using Developer defaults
-    export AMQ_EXTRA_QM_STANZAS="Channels:ChlauthEarlyAdopt=Y,MaxChannels=999999999,MaxActiveChannels=999999999,MQIBindType=FASTPATH|TuningParameters:DefaultQBufferSize=10485760,DefaultPQBufferSize=10485760"
-  else 
-    export AMQ_EXTRA_QM_STANZAS="Channels:MaxChannels=999999999,MaxActiveChannels=999999999,MQIBindType=FASTPATH|TuningParameters:DefaultQBufferSize=10485760,DefaultPQBufferSize=10485760"  
-  fi
-crtmqm -lp ${LOG_PRIM} -lf ${LOG_FILE_SZ} -h 50000 -q ${MQ_QMGR_NAME} || true
+  export AMQ_EXTRA_QM_STANZAS="Channels:MaxChannels=999999999,MaxActiveChannels=999999999,MQIBindType=FASTPATH|TuningParameters:DefaultQBufferSize=10485760,DefaultPQBufferSize=10485760"
+  crtmqm -lp ${LOG_PRIM} -lf ${LOG_FILE_SZ} -h 50000 -q ${MQ_QMGR_NAME} || true
 fi
